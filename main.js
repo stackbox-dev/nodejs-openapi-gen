@@ -78,7 +78,9 @@ function generate(openapiFilename, cb) {
         "--enable-post-process-file",
         "--skip-validate-spec",
         "-i",
-        openapiFilename
+        openapiFilename,
+        "--type-mappings",
+        "object=any"
       ],
       {
         cwd: __dirname,
