@@ -18,7 +18,7 @@ const upload = multer({
 });
 
 app.post("/generate", upload.single("openapispec"), function (req, res) {
-  generate(req.file.path, function (err, output) {
+  generate(req.file.path, req.query.mode, function (err, output) {
     if (err) {
       res.send(err);
     } else {
@@ -59,7 +59,9 @@ app.listen(port, function () {
   console.log("Server started on port " + port);
 });
 
-function generate(openapiFilename, cb) {
+function generate(openapiFilename, mode, cb) {
+  mode = mode ?? "typescript-axios";
+  console.log("mode", mode);
   prepareConfigAndOutput(function (err, config, output) {
     if (err) {
       cb(err);
@@ -70,7 +72,7 @@ function generate(openapiFilename, cb) {
       [
         "generate",
         "-g",
-        "typescript-axios",
+        mode,
         "-c",
         config,
         "-o",
@@ -118,7 +120,9 @@ function prepareConfigAndOutput(cb) {
     nullSafeAdditionalProps: true,
     withSeparateModelsAndApi: false,
     useSingleRequestParameter: true,
-    disallowAdditionalPropertiesIfNotPresent: true
+    disallowAdditionalPropertiesIfNotPresent: true,
+    stringEnums: false,
+    typescriptThreePlus: true
   };
   tmp.dir(function (err, dirname) {
     if (err) {
