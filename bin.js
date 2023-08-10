@@ -1,6 +1,10 @@
+#!/usr/bin/env node
+
 const { generate } = require("./index");
 
 const openapiPath = process.argv[2];
-const output = process.argv[3] ?? "./generated";
+const outputDir = process.argv[3] ?? "./generated";
 
-generate(openapiPath, output);
+generate(openapiPath, outputDir).catch((err) => {
+  console.error(err.message);
+});
