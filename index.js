@@ -13,6 +13,8 @@ exports.generate = async function (openapiPath, outputDir, imageTag = IMAGE_TAG)
   if (!outputDir) {
     throw new Error("No outputDir provided");
   }
+  openapiPath = path.resolve(openapiPath);
+  outputDir = path.resolve(outputDir);
   console.log("Generating from", openapiPath, "to", outputDir);
 
   // generate output
