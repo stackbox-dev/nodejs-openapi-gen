@@ -4,9 +4,9 @@ const path = require("node:path");
 const { rimraf } = require("rimraf");
 const tmp = require("tmp-promise");
 
-export const IMAGE_TAG = "v6.6.0";
+exports.IMAGE_TAG = "v6.6.0";
 
-export const DEFAULT_CONFIG = {
+exports.DEFAULT_CONFIG = {
   npmName: "temp",
   npmVersion: "1.0.0",
   snapshot: false,
@@ -23,7 +23,12 @@ export const DEFAULT_CONFIG = {
   typescriptThreePlus: true
 };
 
-exports.generate = async function (openapiPath, outputDir, imageTag = IMAGE_TAG, config = DEFAULT_CONFIG) {
+exports.generate = async function (
+  openapiPath,
+  outputDir,
+  imageTag = exports.IMAGE_TAG,
+  config = exports.DEFAULT_CONFIG
+) {
   if (!openapiPath) {
     throw new Error("No openapiPath provided");
   }
