@@ -4,9 +4,26 @@ const path = require("node:path");
 const { rimraf } = require("rimraf");
 const tmp = require("tmp-promise");
 
-const IMAGE_TAG = "v6.6.0";
+export const IMAGE_TAG = "v6.6.0";
 
-exports.generate = async function (openapiPath, outputDir, imageTag = IMAGE_TAG) {
+export const DEFAULT_CONFIG = {
+  npmName: "temp",
+  npmVersion: "1.0.0",
+  snapshot: false,
+  supportsES6: true,
+  withInterfaces: false,
+  withoutPrefixEnums: false,
+  allowUnicodeIdentifiers: true,
+  legacyDiscriminatorBehavior: false,
+  nullSafeAdditionalProps: true,
+  withSeparateModelsAndApi: false,
+  useSingleRequestParameter: false,
+  disallowAdditionalPropertiesIfNotPresent: true,
+  stringEnums: false,
+  typescriptThreePlus: true
+};
+
+exports.generate = async function (openapiPath, outputDir, imageTag = IMAGE_TAG, config = DEFAULT_CONFIG) {
   if (!openapiPath) {
     throw new Error("No openapiPath provided");
   }
@@ -19,6 +36,9 @@ exports.generate = async function (openapiPath, outputDir, imageTag = IMAGE_TAG)
 
   // generate output
   const tmpdir = await tmp.dir();
+  const configDir = await tmp.dir();
+
+  await fs.writeFile(path.join(configDir.path, "generate-config.json"), JSON.stringify(config), "utf8");
 
   await new Promise((res, rej) => {
     const proc = spawn(
@@ -27,7 +47,7 @@ exports.generate = async function (openapiPath, outputDir, imageTag = IMAGE_TAG)
         "run",
         "--rm",
         "-v",
-        `${__dirname}:/openapi-gen-config`,
+        `${configDir.path}:/openapi-gen-config`,
         "-v",
         `${path.dirname(openapiPath)}:/input`,
         "-v",
